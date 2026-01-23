@@ -1,0 +1,16 @@
+{
+  "name": "@seedfy/config",
+  "version": "0.0.0",
+  "private": true,
+  "main": "index.js",
+  "license": "MIT",
+  "files": [
+    "tsconfig.base.json",
+    "eslint-preset.js"
+  ],
+  "peerDependencies": {
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  }
+}
