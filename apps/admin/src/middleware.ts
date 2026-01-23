@@ -89,13 +89,29 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    // Whitelist check
+    // Authorization check (Whitelist OR Role)
     const allowedEmails = (process.env.ADMIN_ALLOWED_EMAILS || '')
       .split(',')
       .map(email => email.trim().toLowerCase());
       
-    if (user.email && !allowedEmails.includes(user.email.toLowerCase())) {
-      console.log('Middleware: Redirecting to login (unauthorized email)', user.email);
+    const isWhitelisted = user.email && allowedEmails.includes(user.email.toLowerCase());
+    
+    // Check role in DB
+    let hasValidRole = false;
+    try {
+      const { data: userProfile } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+      
+      hasValidRole = userProfile?.role === 'admin' || userProfile?.role === 'editor';
+    } catch (err) {
+      console.error('Middleware: Error checking role', err);
+    }
+
+    if (!isWhitelisted && !hasValidRole) {
+      console.log('Middleware: Redirecting to login (unauthorized)', { email: user.email, isWhitelisted, hasValidRole });
       // Optional: Sign out if not allowed
       await supabase.auth.signOut();
       return NextResponse.redirect(new URL('/login?error=unauthorized', request.url));
@@ -110,6 +126,17 @@ export async function middleware(request: NextRequest) {
 
     if (user.email && allowedEmails.includes(user.email.toLowerCase())) {
         console.log('Middleware: Redirecting to dashboard (already logged in)');
+        return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    
+    // Also check role for redirect
+    const { data: userProfile } = await supabase
+        .from('users')
+        .select('role')
+        .eq('id', user.id)
+        .single();
+        
+    if (userProfile?.role === 'admin' || userProfile?.role === 'editor') {
         return NextResponse.redirect(new URL('/dashboard', request.url));
     }
   }

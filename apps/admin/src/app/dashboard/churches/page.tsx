@@ -1,5 +1,5 @@
 import { createServiceClient } from '@seedfy/shared/server';
-import { Plus, Edit, Trash2, Search, MapPin } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, MapPin, MessageSquare, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { deleteChurch } from '../../../actions/churches';
 
@@ -84,8 +84,23 @@ export default async function ChurchListPage(props: {
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
                     <Link
+                      href={`/dashboard/churches/${item.id}/quick-actions`}
+                      className="p-1 text-gray-400 hover:text-purple-600 transition-colors"
+                      title="Quick Actions"
+                    >
+                      <Zap className="w-4 h-4" />
+                    </Link>
+                    <Link
+                      href={`/dashboard/churches/${item.id}/posts`}
+                      className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                      title="Gerenciar Posts"
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                    </Link>
+                    <Link
                       href={`/dashboard/churches/${item.id}`}
                       className="p-1 text-gray-400 hover:text-blue-600 transition-colors"
+                      title="Editar Igreja"
                     >
                       <Edit className="w-4 h-4" />
                     </Link>
@@ -93,7 +108,7 @@ export default async function ChurchListPage(props: {
                       'use server';
                       await deleteChurch(item.id);
                     }}>
-                      <button className="p-1 text-gray-400 hover:text-red-600 transition-colors" type="submit">
+                      <button className="p-1 text-gray-400 hover:text-red-600 transition-colors" type="submit" title="Excluir">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </form>
