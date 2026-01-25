@@ -5,6 +5,7 @@ import { FileUpload } from '@/components/file-upload';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 export function ContentForm({ initialData }: { initialData?: any }) {
   const [coverUrl, setCoverUrl] = useState(initialData?.cover_url || '');
@@ -15,11 +16,27 @@ export function ContentForm({ initialData }: { initialData?: any }) {
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
     try {
+        let result;
         if (initialData?.id) {
-            await updateContent(initialData.id, formData);
+            result = await updateContent(initialData.id, formData);
         } else {
-            await createContent(formData);
+            result = await createContent(formData);
         }
+
+        if (result?.error) {
+            // Check if error is an object (field errors) or string
+            const errorMsg = typeof result.error === 'string' 
+                ? result.error 
+                : Object.values(result.error).flat().join(', ');
+            toast.error('Erro ao salvar: ' + errorMsg);
+        } else if (result?.message) {
+            toast.error(result.message);
+        } else {
+            toast.success('Conteúdo salvo com sucesso!');
+        }
+    } catch (err) {
+        toast.error('Ocorreu um erro inesperado.');
+        console.error(err);
     } finally {
         setIsSubmitting(false);
     }
@@ -37,7 +54,7 @@ export function ContentForm({ initialData }: { initialData?: any }) {
                 defaultValue={initialData?.title}
                 required
                 placeholder="Ex: Podcast #01 - Fé e Esperança"
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border"
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border text-black bg-white placeholder:text-gray-500"
                 />
             </div>
 
@@ -46,7 +63,7 @@ export function ContentForm({ initialData }: { initialData?: any }) {
                 <select
                 name="type"
                 defaultValue={initialData?.type || 'podcast'}
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border"
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border text-black bg-white"
                 >
                 <option value="podcast">Podcast (Áudio)</option>
                 <option value="video">Vídeo</option>
