@@ -37,8 +37,8 @@ export async function updateContent(id: string, formData: FormData) {
     title: formData.get('title'),
     description: formData.get('description'),
     type: formData.get('type'),
-    cover_url: formData.get('cover_url'),
-    media_url: formData.get('media_url'),
+    cover_url: formData.get('cover_url') || null,
+    media_url: formData.get('media_url') || null,
     is_live: formData.get('is_live') === 'on',
   };
 
