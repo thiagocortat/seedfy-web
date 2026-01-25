@@ -6,18 +6,24 @@ import { redirect } from 'next/navigation';
 import { ContentItemSchema } from '@seedfy/shared';
 
 export async function createContent(formData: FormData) {
+  const coverUrl = formData.get('cover_url') as string;
+  const mediaUrl = formData.get('media_url') as string;
+
   const rawData = {
     title: formData.get('title'),
     description: formData.get('description'),
     type: formData.get('type'),
-    cover_url: formData.get('cover_url'),
-    media_url: formData.get('media_url'),
+    cover_url: coverUrl && coverUrl.trim() !== '' ? coverUrl.trim() : null,
+    media_url: mediaUrl && mediaUrl.trim() !== '' ? mediaUrl.trim() : null,
     is_live: formData.get('is_live') === 'on',
   };
+
+  console.log('Creating content with data:', rawData);
 
   const validatedFields = ContentItemSchema.safeParse(rawData);
 
   if (!validatedFields.success) {
+    console.error('Validation error:', validatedFields.error.flatten().fieldErrors);
     return { error: validatedFields.error.flatten().fieldErrors };
   }
 
