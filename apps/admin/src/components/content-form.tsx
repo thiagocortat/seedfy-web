@@ -61,7 +61,7 @@ export function ContentForm({ initialData }: { initialData?: any }) {
                 defaultValue={initialData?.description}
                 rows={4}
                 placeholder="Breve descrição do conteúdo..."
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border"
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border text-gray-900 placeholder:text-gray-500"
                 />
             </div>
             
@@ -103,8 +103,8 @@ export function ContentForm({ initialData }: { initialData?: any }) {
 
             <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-4">
                 <FileUpload
-                    bucket="content"
-                    path="media"
+                    bucket="media"
+                    path="content"
                     label="Arquivo de Mídia (Áudio/Vídeo)"
                     accept="audio/*,video/*"
                     maxSizeMB={100}
