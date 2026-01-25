@@ -58,6 +58,9 @@ export default function PostForm({
         }
       }
     } catch (err) {
+      if ((err as Error).message === 'NEXT_REDIRECT') {
+        return;
+      }
       setError('An unexpected error occurred');
     } finally {
       setLoading(false);

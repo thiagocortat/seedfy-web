@@ -35,6 +35,10 @@ export function ContentForm({ initialData }: { initialData?: any }) {
             toast.success('Conteúdo salvo com sucesso!');
         }
     } catch (err) {
+        // Ignora erro de redirect do Next.js
+        if ((err as Error).message === 'NEXT_REDIRECT') {
+            return;
+        }
         toast.error('Ocorreu um erro inesperado.');
         console.error(err);
     } finally {
@@ -99,8 +103,8 @@ export function ContentForm({ initialData }: { initialData?: any }) {
         <div className="space-y-6">
             <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-4">
                 <FileUpload
-                    bucket="content"
-                    path="covers"
+                    bucket="covers"
+                    path="content"
                     label="Imagem de Capa"
                     accept="image/*"
                     maxSizeMB={5}
