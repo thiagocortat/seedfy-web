@@ -74,3 +74,40 @@ export const ChurchQuickActionSchema = z.object({
 });
 
 export type ChurchQuickAction = z.infer<typeof ChurchQuickActionSchema>;
+
+// Journey Templates
+export const JourneyTemplateSchema = z.object({
+  id: z.string().uuid().optional(),
+  title: z.string().min(1, "Title is required"),
+  description_short: z.string().min(1, "Short description is required"),
+  description_long: z.string().optional().nullable(),
+  cover_image_url: z.string().url().optional().nullable().or(z.literal('')),
+  tags: z.array(z.string()).optional().default([]),
+  durations_supported: z.array(z.number()).min(1, "At least one duration is required"),
+  is_active: z.boolean().default(false),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+});
+
+export type JourneyTemplate = z.infer<typeof JourneyTemplateSchema>;
+
+// Journey Chapter Templates
+export const JourneyChapterTemplateSchema = z.object({
+  id: z.string().uuid().optional(),
+  journey_id: z.string().uuid(),
+  day_index: z.coerce.number().int().min(1, "Day index must be at least 1"),
+  title: z.string().min(1, "Title is required"),
+  narrative: z.string().min(1, "Narrative is required"),
+  focus: z.string().min(1, "Focus is required"),
+  practice: z.string().min(1, "Practice is required"),
+  reflection_prompt: z.string().min(1, "Reflection prompt is required"),
+  prayer: z.string().optional().nullable(),
+  verse_reference: z.string().optional().nullable(),
+  verse_text: z.string().optional().nullable(),
+  media_url: z.string().url().optional().nullable().or(z.literal('')),
+  media_type: z.enum(['audio', 'video']).optional().nullable(),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional(),
+});
+
+export type JourneyChapterTemplate = z.infer<typeof JourneyChapterTemplateSchema>;

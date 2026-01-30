@@ -2,13 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { LayoutDashboard, Library, Church, LogOut } from 'lucide-react';
+import { LayoutDashboard, Library, Church, LogOut, Map } from 'lucide-react';
 import { createBrowserClient } from '@seedfy/shared';
 import { toast } from 'sonner';
 
 const navItems = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/dashboard/content', label: 'Conteúdo', icon: Library },
+  { href: '/dashboard/journeys', label: 'Jornadas', icon: Map },
   { href: '/dashboard/churches', label: 'Igrejas', icon: Church },
 ];
 

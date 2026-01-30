@@ -58,7 +58,7 @@ export function ContentForm({ initialData }: { initialData?: any }) {
                 defaultValue={initialData?.title}
                 required
                 placeholder="Ex: Podcast #01 - Fé e Esperança"
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border text-black bg-white placeholder:text-gray-500"
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border text-gray-900 bg-white placeholder:text-gray-500"
                 />
             </div>
 
@@ -67,7 +67,7 @@ export function ContentForm({ initialData }: { initialData?: any }) {
                 <select
                 name="type"
                 defaultValue={initialData?.type || 'podcast'}
-                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border text-black bg-white"
+                className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border text-gray-900 bg-white"
                 >
                 <option value="podcast">Podcast (Áudio)</option>
                 <option value="video">Vídeo</option>
