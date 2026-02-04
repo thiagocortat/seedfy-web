@@ -34,9 +34,72 @@ export const UserSchema = z.object({
   name: z.string().optional().nullable(),
   role: UserRoleEnum.default('viewer'),
   photo_url: z.string().optional().nullable(),
+  church_id: z.string().optional().nullable(),
 });
 
 export type User = z.infer<typeof UserSchema>;
+
+// Groups
+export const GroupRoleEnum = z.enum(['owner', 'member']);
+
+export const GroupSchema = z.object({
+  id: z.string().uuid().optional(),
+  name: z.string().min(1, "Name is required"),
+  image_url: z.string().url().optional().nullable(),
+  created_by: z.string().uuid().optional(),
+  created_at: z.string().optional(),
+});
+
+export type Group = z.infer<typeof GroupSchema>;
+
+export const GroupMemberSchema = z.object({
+  group_id: z.string().uuid(),
+  user_id: z.string().uuid(),
+  role: GroupRoleEnum.default('member'),
+  joined_at: z.string().optional(),
+});
+
+export type GroupMember = z.infer<typeof GroupMemberSchema>;
+
+// Challenges
+export const ChallengeTypeEnum = z.enum(['reading', 'meditation', 'fasting', 'communion']);
+export const ChallengeStatusEnum = z.enum(['active', 'completed', 'canceled']);
+
+export const ChallengeSchema = z.object({
+  id: z.string().uuid().optional(),
+  group_id: z.string().uuid().optional(),
+  created_by: z.string().uuid().optional(),
+  type: ChallengeTypeEnum,
+  title: z.string().min(1, "Title is required"),
+  duration_days: z.number().int().min(1).default(1),
+  start_date: z.string().optional().nullable(),
+  end_date: z.string().optional().nullable(),
+  status: ChallengeStatusEnum.default('active'),
+  created_at: z.string().optional(),
+});
+
+export type Challenge = z.infer<typeof ChallengeSchema>;
+
+export const ChallengeParticipantStatusEnum = z.enum(['active', 'quit', 'completed']);
+
+export const ChallengeParticipantSchema = z.object({
+  challenge_id: z.string().uuid(),
+  user_id: z.string().uuid(),
+  status: ChallengeParticipantStatusEnum.default('active'),
+  joined_at: z.string().optional(),
+  progress: z.number().int().default(0),
+});
+
+export type ChallengeParticipant = z.infer<typeof ChallengeParticipantSchema>;
+
+export const DailyCheckinSchema = z.object({
+  challenge_id: z.string().uuid(),
+  user_id: z.string().uuid(),
+  date_key: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format (YYYY-MM-DD)"),
+  completed_at: z.string().optional(),
+});
+
+export type DailyCheckin = z.infer<typeof DailyCheckinSchema>;
 
 export const ChurchPostStatusEnum = z.enum(['draft', 'published', 'archived']);
 

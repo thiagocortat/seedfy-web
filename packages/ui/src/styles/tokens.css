@@ -1,0 +1,175 @@
+@import "tailwindcss";
+
+@theme {
+  /*
+    Mapping PRD tokens to standard Tailwind/Shadcn semantic names.
+    This ensures existing components work while matching the new Design System.
+  */
+  
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  
+  --color-card: var(--surface);
+  --color-card-foreground: var(--text-primary);
+  
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--text-primary);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  
+  --color-muted: var(--border);
+  --color-muted-foreground: var(--text-secondary);
+  
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --color-destructive: var(--error);
+  --color-destructive-foreground: var(--primary-foreground);
+  
+  --color-border: var(--border);
+  --color-input: var(--border);
+  --color-ring: var(--accent);
+  
+  --color-success: var(--success);
+
+  /* PRD Specific Token Names */
+  --color-seedfy-background: var(--background);
+  --color-seedfy-surface: var(--surface);
+  --color-seedfy-primary: var(--primary);
+  --color-seedfy-secondary: var(--secondary);
+  --color-seedfy-accent: var(--accent);
+  --color-seedfy-error: var(--error);
+  --color-seedfy-success: var(--success);
+
+  /* Typography */
+  --font-serif: Georgia, serif;
+  --font-sans: system-ui, Roboto, Helvetica Neue, sans-serif;
+
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 2px 4px rgba(0,0,0,0.1);
+  
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from { height: 0 }
+    to { height: var(--radix-accordion-content-height) }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height) }
+    to { height: 0 }
+  }
+}
+
+/* Base Variables (Light Mode Default) */
+:root {
+  /* PRD: Light Mode Values (Exact) */
+  --background: #F9F8F6;
+  --surface: #FFFFFF;
+  --primary: #2D3436;
+  --secondary: #8E8E93;
+  --accent: #D4AF37;
+  --text-primary: #1A1A1A;
+  --text-secondary: #666666;
+  --border: #E5E5EA;
+  --error: #FF3B30;
+  --success: #34C759;
+
+  /* Derived/Mapped Variables for Shadcn/Tailwind compatibility */
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-primary);
+  --primary-foreground: #FFFFFF; /* Light Mode Primary text is White */
+  --secondary-foreground: #FFFFFF;
+  --muted: var(--border);
+  --muted-foreground: var(--text-secondary);
+  --accent-foreground: #FFFFFF;
+  --destructive: var(--error);
+  --destructive-foreground: #FFFFFF;
+  --input: var(--border);
+  --ring: var(--accent);
+}
+
+/* Dark Mode Tokens (Only applied via .dark class) */
+.dark {
+  /* PRD: Dark Mode Values (Exact) */
+  --background: #1C1C1E;
+  --surface: #2C2C2E;
+  --primary: #FFFFFF;
+  --secondary: #8E8E93;
+  --accent: #FFD60A;
+  --text-primary: #FFFFFF;
+  --text-secondary: #EBEBF5;
+  --border: #38383A;
+  --error: #FF453A;
+  --success: #32D74B;
+
+  /* Derived/Mapped Variables */
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-primary);
+  --primary-foreground: #1C1C1E; /* Dark Mode Primary text is Dark */
+  --secondary-foreground: #FFFFFF;
+  --muted: var(--border);
+  --muted-foreground: var(--text-secondary);
+  --accent-foreground: #1C1C1E;
+  --destructive: var(--error);
+  --destructive-foreground: #FFFFFF;
+  --input: var(--border);
+  --ring: var(--accent);
+}
+
+/* Animation utilities for tailwindcss-animate compatibility */
+@layer utilities {
+  .animate-in {
+    animation-name: enter;
+    animation-duration: 150ms;
+    --tw-enter-opacity: initial;
+    --tw-enter-scale: initial;
+    --tw-enter-rotate: initial;
+    --tw-enter-translate-x: initial;
+    --tw-enter-translate-y: initial;
+  }
+  .animate-out {
+    animation-name: exit;
+    animation-duration: 150ms;
+    --tw-exit-opacity: initial;
+    --tw-exit-scale: initial;
+    --tw-exit-rotate: initial;
+    --tw-exit-translate-x: initial;
+    --tw-exit-translate-y: initial;
+  }
+
+  .fade-in-0 { --tw-enter-opacity: 0; }
+  .fade-out-0 { --tw-exit-opacity: 0; }
+
+  .zoom-in-95 { --tw-enter-scale: 0.95; }
+  .zoom-out-95 { --tw-exit-scale: 0.95; }
+
+  .slide-in-from-top { --tw-enter-translate-y: -100%; }
+  .slide-in-from-bottom { --tw-enter-translate-y: 100%; }
+  .slide-in-from-left { --tw-enter-translate-x: -100%; }
+  .slide-in-from-right { --tw-enter-translate-x: 100%; }
+
+  .slide-out-to-top { --tw-exit-translate-y: -100%; }
+  .slide-out-to-bottom { --tw-exit-translate-y: 100%; }
+  .slide-out-to-left { --tw-exit-translate-x: -100%; }
+  .slide-out-to-right { --tw-exit-translate-x: 100%; }
+}

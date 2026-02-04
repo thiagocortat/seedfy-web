@@ -32,13 +32,13 @@ export function PreviewModal({ isOpen, onClose, title, mediaUrl, type }: Preview
   return (
     <dialog
       ref={dialogRef}
-      className="backdrop:bg-black/50 rounded-xl shadow-2xl p-0 w-full max-w-2xl bg-white overflow-hidden"
+      className="backdrop:bg-black/80 rounded-xl shadow-2xl p-0 w-full max-w-2xl bg-card text-card-foreground border border-border overflow-hidden"
       onClose={onClose}
     >
-      <div className="flex items-center justify-between p-4 border-b border-gray-100">
-        <h3 className="font-semibold text-gray-900 truncate pr-4">{title}</h3>
-        <button onClick={handleClose} className="p-1 hover:bg-gray-100 rounded-full transition-colors">
-          <X className="w-5 h-5 text-gray-500" />
+      <div className="flex items-center justify-between p-4 border-b border-border">
+        <h3 className="font-semibold text-foreground truncate pr-4">{title}</h3>
+        <button onClick={handleClose} className="p-1 hover:bg-muted rounded-full transition-colors">
+          <X className="w-5 h-5 text-muted-foreground" />
         </button>
       </div>
       
@@ -54,8 +54,8 @@ export function PreviewModal({ isOpen, onClose, title, mediaUrl, type }: Preview
         )}
       </div>
 
-      <div className="p-4 bg-gray-50 text-sm text-gray-500 text-right">
-        <a href={mediaUrl} target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 hover:underline">
+      <div className="p-4 bg-muted text-sm text-muted-foreground text-right">
+        <a href={mediaUrl} target="_blank" rel="noopener noreferrer" className="hover:text-primary hover:underline">
           Abrir original em nova aba
         </a>
       </div>

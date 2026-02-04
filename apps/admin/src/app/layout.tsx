@@ -8,7 +8,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className="antialiased bg-gray-50 text-gray-900">
+      <body className="antialiased bg-background text-foreground">
         {children}
         <Toaster position="top-right" />
       </body>
