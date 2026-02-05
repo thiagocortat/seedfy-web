@@ -126,7 +126,7 @@ export default async function DashboardPage() {
       
       <div className="grid md:grid-cols-3 gap-6">
         {/* Widget A — “Meus Grupos” */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <Users className="w-5 h-5 text-blue-600" />
@@ -179,7 +179,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Widget B — “Desafios Ativos” */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <Trophy className="w-5 h-5 text-orange-500" />
@@ -218,10 +218,12 @@ export default async function DashboardPage() {
                         </div>
                       </div>
                     )}
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-gray-900 truncate">{challenge.title}</span>
+                    <div className="flex items-center justify-between mb-1 gap-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 truncate">{challenge.title}</p>
+                      </div>
                       {isChecked && (
-                         <span className="text-green-600" title="Check-in feito hoje">
+                         <span className="text-green-600 flex-shrink-0" title="Check-in feito hoje">
                            <CheckCircle className="w-4 h-4" />
                          </span>
                       )}
@@ -250,7 +252,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Widget C — “Conteúdos Recentes” */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+        <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col overflow-hidden">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-bold text-gray-900 flex items-center gap-2">
               <Play className="w-5 h-5 text-purple-600" />
