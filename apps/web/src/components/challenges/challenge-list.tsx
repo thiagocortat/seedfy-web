@@ -8,6 +8,7 @@ import { Target } from 'lucide-react';
 interface CheckinStatus {
   done: boolean;
   todayKey: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   debug?: any;
 }
 
@@ -21,11 +22,6 @@ interface ChallengeListProps {
 
 export function ChallengeList({ items, checkinStatus }: ChallengeListProps) {
   const [tab, setTab] = useState<'active' | 'completed'>('active');
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   const filteredItems = items.filter(item => {
     if (tab === 'active') return item.participant.status === 'active';

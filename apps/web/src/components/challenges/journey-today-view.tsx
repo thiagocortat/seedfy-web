@@ -53,7 +53,7 @@ export function JourneyTodayView({
           </h3>
           <p className="text-purple-800 font-medium">{chapter.verse_reference}</p>
           {chapter.verse_text && (
-            <p className="text-purple-700 mt-2 text-sm italic leading-relaxed">"{chapter.verse_text}"</p>
+            <p className="text-purple-700 mt-2 text-sm italic leading-relaxed">&quot;{chapter.verse_text}&quot;</p>
           )}
         </div>
 

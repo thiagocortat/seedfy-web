@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Library, Users, Trophy, User } from 'lucide-react';
+import { LayoutDashboard, Library, Users, Trophy, User, Building2 } from 'lucide-react';
 
 const navItems = [
   { href: '/app', label: 'Início', icon: LayoutDashboard },
+  { href: '/app/church', label: 'Igreja', icon: Building2 },
   { href: '/app/groups', label: 'Grupos', icon: Users },
   { href: '/app/content', label: 'Conteúdo', icon: Library },
   { href: '/app/challenges', label: 'Desafios', icon: Trophy },

@@ -11,8 +11,10 @@ interface CheckinButtonProps {
   userId: string;
   latestCheckinDate?: string | null;
   participantId: string;
-  dayIndex?: number; // Optional for Journeys
+  dayIndex?: number;
   timezone?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  debugInfo?: any;
 }
 
 export function CheckinButton({ challengeId, userId, latestCheckinDate, participantId, dayIndex, timezone }: CheckinButtonProps) {
@@ -52,6 +54,7 @@ export function CheckinButton({ challengeId, userId, latestCheckinDate, particip
 
     try {
       // 1. Insert check-in
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const payload: any = {
         challenge_id: challengeId,
         user_id: userId,

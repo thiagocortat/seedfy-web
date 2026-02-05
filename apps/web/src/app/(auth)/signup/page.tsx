@@ -3,12 +3,14 @@
 import { createBrowserClient } from '@seedfy/shared';
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 export default function SignupPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const supabase = createBrowserClient();
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -16,7 +18,7 @@ export default function SignupPage() {
     setLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -29,7 +31,13 @@ export default function SignupPage() {
         return;
       }
 
-      toast.success('Cadastro realizado! Verifique seu email para confirmar.');
+      if (data.session) {
+        toast.success('Cadastro realizado com sucesso!');
+        router.push('/app');
+        router.refresh();
+      } else {
+        toast.success('Cadastro realizado! Verifique seu email para confirmar.');
+      }
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Ocorreu um erro inesperado';
       toast.error(message);

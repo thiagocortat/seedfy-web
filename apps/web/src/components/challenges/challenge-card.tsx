@@ -7,6 +7,7 @@ interface ChallengeCardProps {
   participant?: ChallengeParticipant;
   isJourney?: boolean;
   checkedInToday?: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   debugInfo?: any;
 }
 

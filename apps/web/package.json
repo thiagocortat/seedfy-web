@@ -9,16 +9,23 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-dialog": "^1.1.15",
     "@seedfy/shared": "*",
     "@seedfy/ui": "*",
     "@supabase/ssr": "^0.0.10",
     "@supabase/supabase-js": "^2.94.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.562.0",
     "next": "16.1.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-hook-form": "^7.71.1",
     "sonner": "^2.0.7",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwind-merge": "^3.4.0",
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.22.0"
   },
   "devDependencies": {
     "@seedfy/config": "*",

@@ -40,12 +40,16 @@ export const UserSchema = z.object({
 export type User = z.infer<typeof UserSchema>;
 
 // Groups
-export const GroupRoleEnum = z.enum(['owner', 'member']);
+export const GroupRoleEnum = z.enum(['owner', 'admin', 'member']);
+
+export const GroupJoinPolicyEnum = z.enum(['open', 'request', 'invite_only']);
 
 export const GroupSchema = z.object({
   id: z.string().uuid().optional(),
   name: z.string().min(1, "Name is required"),
   image_url: z.string().url().optional().nullable(),
+  discoverable: z.boolean().default(true),
+  join_policy: GroupJoinPolicyEnum.default('open'),
   created_by: z.string().uuid().optional(),
   created_at: z.string().optional(),
 });
@@ -61,20 +65,53 @@ export const GroupMemberSchema = z.object({
 
 export type GroupMember = z.infer<typeof GroupMemberSchema>;
 
+export const GroupInvitationStatusEnum = z.enum(['pending', 'accepted', 'declined']);
+
+export const GroupInvitationSchema = z.object({
+  id: z.string().uuid().optional(),
+  group_id: z.string().uuid(),
+  inviter_user_id: z.string().uuid(),
+  invited_user_id: z.string().uuid(),
+  status: GroupInvitationStatusEnum.default('pending'),
+  created_at: z.string().optional(),
+  responded_at: z.string().optional().nullable(),
+});
+
+export type GroupInvitation = z.infer<typeof GroupInvitationSchema>;
+
+export const GroupJoinRequestStatusEnum = z.enum(['pending', 'approved', 'rejected']);
+
+export const GroupJoinRequestSchema = z.object({
+  id: z.string().uuid().optional(),
+  group_id: z.string().uuid(),
+  requester_user_id: z.string().uuid(),
+  status: GroupJoinRequestStatusEnum.default('pending'),
+  created_at: z.string().optional(),
+  resolved_at: z.string().optional().nullable(),
+  resolved_by_user_id: z.string().uuid().optional().nullable(),
+});
+
+export type GroupJoinRequest = z.infer<typeof GroupJoinRequestSchema>;
+
 // Challenges
 export const ChallengeTypeEnum = z.enum(['reading', 'meditation', 'fasting', 'communion']);
 export const ChallengeStatusEnum = z.enum(['active', 'completed', 'canceled']);
 
+export const ChallengeUnlockPolicyEnum = z.enum(['daily', 'all_open']);
+
 export const ChallengeSchema = z.object({
   id: z.string().uuid().optional(),
-  group_id: z.string().uuid().optional(),
+  group_id: z.string().uuid().optional().nullable(),
+  journey_id: z.string().uuid().optional().nullable(),
   created_by: z.string().uuid().optional(),
-  type: ChallengeTypeEnum,
+  type: ChallengeTypeEnum.default('reading'),
   title: z.string().min(1, "Title is required"),
   duration_days: z.number().int().min(1).default(1),
   start_date: z.string().optional().nullable(),
   end_date: z.string().optional().nullable(),
   status: ChallengeStatusEnum.default('active'),
+  unlock_policy: ChallengeUnlockPolicyEnum.default('daily'),
+  timezone: z.string().optional().default('UTC'),
   created_at: z.string().optional(),
 });
 

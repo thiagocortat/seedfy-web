@@ -3,6 +3,8 @@ import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { ArrowRight, Play, Users, Trophy, CheckCircle } from 'lucide-react';
 import { getCheckinStatusMap } from '@/lib/checkin-helper';
+import { MyChurchBlock } from '@/components/home/my-church-block';
+import { Church, ChurchPost } from '@seedfy/shared';
 
 export default async function DashboardPage() {
   const cookieStore = await cookies();
@@ -41,7 +43,45 @@ export default async function DashboardPage() {
     return { data, isPreviewMode };
   };
 
-  const [groupsResult, challengesResult, contentResult] = await Promise.all([
+  // Helper to fetch church data
+  const fetchChurchData = async (userId: string) => {
+    const { data: userData } = await supabase
+      .from('users')
+      .select('church_id')
+      .eq('id', userId)
+      .single();
+
+    const churchId = userData?.church_id;
+    let church = null;
+    let posts: ChurchPost[] = [];
+
+    if (churchId) {
+      // Fetch Church Details
+      const { data: churchData } = await supabase
+        .from('churches')
+        .select('*')
+        .eq('id', churchId)
+        .single();
+      church = churchData;
+
+      // Fetch Recent Posts
+      const { data: postsData } = await supabase
+        .from('church_posts')
+        .select('*')
+        .eq('church_id', churchId)
+        .eq('status', 'published')
+        .lte('published_at', new Date().toISOString())
+        .order('pinned', { ascending: false })
+        .order('published_at', { ascending: false })
+        .limit(3);
+      
+      posts = postsData || [];
+    }
+
+    return { churchId, church, posts };
+  };
+
+  const [groupsResult, challengesResult, contentResult, churchResult] = await Promise.all([
     supabase
       .from('group_members')
       .select('groups(id, name, image_url)')
@@ -54,12 +94,16 @@ export default async function DashboardPage() {
       .eq('status', 'active') // Only active challenges
       .limit(5),
     fetchContent(),
+    fetchChurchData(user.id),
   ]);
 
-  const groups = groupsResult.data?.map((item: any) => item.groups) || [];
-  const challenges = challengesResult.data?.map((item: any) => item.challenges) || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const groups = groupsResult.data?.map((item: any) => item.groups)?.filter(Boolean) || [];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const challenges = challengesResult.data?.map((item: any) => item.challenges)?.filter(Boolean) || [];
   const content = contentResult.data || [];
   const isContentPreview = contentResult.isPreviewMode;
+  const { churchId, church, posts } = churchResult;
 
   // Single Source of Truth for Checkins
   const checkinStatusMap = await getCheckinStatusMap(supabase, user.id, challenges);
@@ -72,6 +116,13 @@ export default async function DashboardPage() {
           Seu painel de crescimento espiritual.
         </p>
       </div>
+
+      {/* My Church Block (New) */}
+      <MyChurchBlock 
+        churchId={churchId} 
+        church={church as Church} 
+        posts={posts} 
+      />
       
       <div className="grid md:grid-cols-3 gap-6">
         {/* Widget A — “Meus Grupos” */}
@@ -90,6 +141,7 @@ export default async function DashboardPage() {
           
           <div className="space-y-3 flex-1">
             {groups.length > 0 ? (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               groups.map((group: any) => (
                 <Link 
                   key={group.id} 
@@ -142,6 +194,7 @@ export default async function DashboardPage() {
           
           <div className="space-y-3 flex-1">
             {challenges.length > 0 ? (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               challenges.map((challenge: any) => {
                 const status = checkinStatusMap.get(challenge.id);
                 const isChecked = status?.done || false;
@@ -216,6 +269,7 @@ export default async function DashboardPage() {
 
           <div className="space-y-3 flex-1">
             {content.length > 0 ? (
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               content.map((item: any) => (
                 <Link 
                   key={item.id} 

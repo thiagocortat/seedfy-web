@@ -8,11 +8,13 @@ export interface CheckinStatus {
     todayKey: string;
     done: boolean;
     reason: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     queryFilter: any;
   };
 }
 
 export async function getCheckinStatusMap(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   supabase: any,
   userId: string,
   challenges: { id: string; timezone?: string }[]
@@ -65,6 +67,7 @@ export async function getCheckinStatusMap(
 
   // Create a lookup for the fetched checkins: "challengeId_dateKey"
   const fetchedCheckinsSet = new Set(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     checkins?.map((c: any) => `${c.challenge_id}_${c.date_key}`) || []
   );
 
