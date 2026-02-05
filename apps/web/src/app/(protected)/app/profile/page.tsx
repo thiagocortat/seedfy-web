@@ -3,6 +3,9 @@ import { createServerClient } from '@seedfy/shared/server';
 import { ProfileForm } from '@/components/profile/profile-form';
 import { User, Church } from '@seedfy/shared';
 import { redirect } from 'next/navigation';
+import { getProfileProgress } from '@/lib/profile-progress';
+import { ConsistencyCard } from '@/components/profile/consistency-card';
+import { TrophiesPreview } from '@/components/profile/trophies-preview';
 
 export default async function ProfilePage() {
   const cookieStore = await cookies();
@@ -28,6 +31,9 @@ export default async function ProfilePage() {
     .select('id, name, city, state, logo_url')
     .order('name');
 
+  // 4. Fetch Profile Progress
+  const profileProgress = await getProfileProgress(supabase, authUser.id);
+
   // If user record doesn't exist in public table yet (rare but possible), use auth data
   const user: User = userData || {
     id: authUser.id,
@@ -41,10 +47,22 @@ export default async function ProfilePage() {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-foreground">Meu Perfil</h1>
-        <p className="text-muted-foreground mt-1">Gerencie suas informações pessoais e vínculo com a igreja.</p>
+        <p className="text-muted-foreground mt-1">Gerencie suas informações pessoais e veja seu progresso.</p>
       </div>
 
+      <ConsistencyCard 
+        streakCurrent={profileProgress.streakCurrent}
+        streakBest={profileProgress.streakBest}
+        activeDays={profileProgress.activeDaysTotal}
+      />
+
+      <TrophiesPreview 
+        trophies={profileProgress.trophiesPreview}
+        totalCompleted={profileProgress.challengesCompletedTotal}
+      />
+
       <div className="bg-card rounded-xl border border-border shadow-sm p-6 sm:p-8">
+        <h2 className="text-lg font-semibold text-foreground mb-6">Dados Pessoais</h2>
         <ProfileForm 
           user={user} 
           churches={(churches as Church[]) || []} 
