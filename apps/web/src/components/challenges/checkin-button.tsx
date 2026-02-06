@@ -15,9 +15,20 @@ interface CheckinButtonProps {
   timezone?: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   debugInfo?: any;
+  disabled?: boolean;
+  disabledLabel?: string;
 }
 
-export function CheckinButton({ challengeId, userId, latestCheckinDate, participantId, dayIndex, timezone }: CheckinButtonProps) {
+export function CheckinButton({ 
+  challengeId, 
+  userId, 
+  latestCheckinDate, 
+  participantId, 
+  dayIndex, 
+  timezone,
+  disabled,
+  disabledLabel
+}: CheckinButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [isCheckedToday, setIsCheckedToday] = useState(false);
@@ -42,6 +53,17 @@ export function CheckinButton({ challengeId, userId, latestCheckinDate, particip
   if (!isClient) {
     return (
       <div className="w-full h-12 bg-gray-100 animate-pulse rounded-xl" />
+    );
+  }
+
+  if (disabled) {
+    return (
+      <button
+        disabled
+        className="w-full flex items-center justify-center gap-2 p-4 rounded-xl font-medium transition-all bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200"
+      >
+        {disabledLabel || 'Indisponível'}
+      </button>
     );
   }
 

@@ -47,27 +47,36 @@ export function ChallengeCard({ challenge, participant, isJourney, checkedInToda
       )}
 
       <div className="flex items-start justify-between mb-4">
-        <div className={`p-2.5 rounded-lg ${
-          isJourney ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' :
-          challenge.type === 'reading' ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400' :
-          challenge.type === 'fasting' ? 'bg-orange-50 text-orange-600 dark:bg-orange-900/20 dark:text-orange-400' :
-          challenge.type === 'meditation' ? 'bg-purple-50 text-purple-600 dark:bg-purple-900/20 dark:text-purple-400' :
-          'bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400'
+        <div className={`p-2.5 rounded-xl border shadow-sm bg-white ${
+          isJourney ? 'border-gray-100 text-purple-600' :
+          challenge.type === 'reading' ? 'border-gray-100 text-blue-600' :
+          challenge.type === 'fasting' ? 'border-gray-100 text-orange-600' :
+          challenge.type === 'meditation' ? 'border-gray-100 text-purple-600' :
+          'border-gray-100 text-green-600'
         }`}>
-          {isJourney ? <Target className="w-6 h-6" /> : <Icon className="w-6 h-6" />}
+          {isJourney ? <Target className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
         </div>
         
         <div className="flex gap-2">
           {isLoading ? (
             <div className="h-6 w-20 bg-muted animate-pulse rounded-full" />
-          ) : checkedInToday && (
-             <div className="flex items-center text-xs font-medium text-green-700 bg-green-50 px-2 py-1 rounded-full border border-green-100 dark:bg-green-900/20 dark:text-green-400 dark:border-green-900/30">
-              <CheckCircle className="w-3 h-3 mr-1" />
-              Feito hoje
-            </div>
+          ) : (
+            <>
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              {(participant as any)?.status === 'quit' ? (
+                <div className="flex items-center text-xs font-medium text-red-600 bg-white border border-gray-200 px-2.5 py-0.5 rounded-full shadow-sm">
+                  Desistiu
+                </div>
+              ) : checkedInToday && (
+                <div className="flex items-center text-xs font-medium text-green-600 bg-white border border-gray-200 px-2.5 py-0.5 rounded-full shadow-sm">
+                  <CheckCircle className="w-3.5 h-3.5 mr-1" />
+                  Feito hoje
+                </div>
+              )}
+            </>
           )}
           {isJourney && (
-            <div className="flex items-center text-xs font-medium text-purple-700 bg-purple-50 px-2 py-1 rounded-full border border-purple-100 dark:bg-purple-900/20 dark:text-purple-400 dark:border-purple-900/30">
+            <div className="flex items-center text-xs font-medium text-purple-600 bg-white border border-gray-200 px-2.5 py-0.5 rounded-full shadow-sm">
               Jornada
             </div>
           )}

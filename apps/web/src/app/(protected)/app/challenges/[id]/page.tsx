@@ -1,9 +1,10 @@
 import { cookies } from 'next/headers';
 import { createServerClient } from '@seedfy/shared/server';
 import { CheckinButton } from '@/components/challenges/checkin-button';
+import { QuitChallengeButton } from '@/components/challenges/quit-challenge-button';
 import { Challenge, ChallengeParticipant, getTodayKey, getDayIndex } from '@seedfy/shared';
 import { notFound, redirect } from 'next/navigation';
-import { ChevronLeft, Calendar, Trophy, BarChart } from 'lucide-react';
+import { ChevronLeft, Calendar, Trophy, BarChart, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { JourneyTodayView } from '@/components/challenges/journey-today-view';
 import { JourneyTrailView } from '@/components/challenges/journey-trail-view';
@@ -53,6 +54,8 @@ export default async function ChallengeDetailPage({ params }: Props) {
 
   const typedChallenge = challenge as Challenge & { journey_id?: string; timezone?: string };
   const typedParticipant = participant as ChallengeParticipant;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const isQuit = (typedParticipant as any).status === 'quit';
 
   // Single Source of Truth for Checkins
   const checkinStatusMap = await getCheckinStatusMap(supabase, user.id, [{ ...typedChallenge, id }]);
@@ -105,18 +108,40 @@ export default async function ChallengeDetailPage({ params }: Props) {
             </div>
           </div>
         )}
-        <Link 
-          href="/app/challenges"
-          className="inline-flex items-center text-sm text-gray-500 hover:text-gray-900 mb-6 transition-colors group"
-        >
-          <ChevronLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
-          Voltar para meus desafios
-        </Link>
+        
+        <div className="flex items-center justify-between mb-6">
+          <Link 
+            href="/app/challenges"
+            className="inline-flex items-center text-sm text-gray-500 hover:text-gray-900 transition-colors group"
+          >
+            <ChevronLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
+            Voltar para meus desafios
+          </Link>
+          
+          <QuitChallengeButton 
+            challengeId={id} 
+            userId={user.id} 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            status={(typedParticipant as any).status} 
+          />
+        </div>
+
+        {isQuit && (
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-start gap-3">
+            <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <h3 className="text-sm font-medium text-yellow-900">Você desistiu deste desafio</h3>
+              <p className="text-sm text-yellow-700 mt-1">
+                Seus check-ins anteriores foram mantidos. Se desejar continuar, clique em &quot;Entrar novamente&quot; acima.
+              </p>
+            </div>
+          </div>
+        )}
 
         <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden mb-6">
            <div className="p-6 border-b border-border">
              <div className="flex items-center justify-between mb-4">
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide bg-primary/10 text-primary">
+                <span className="px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide bg-white border border-gray-200 text-purple-600 shadow-sm">
                   Jornada
                 </span>
                 <span className="text-sm text-muted-foreground">Dia {currentDay} de {typedChallenge.duration_days}</span>
@@ -135,6 +160,7 @@ export default async function ChallengeDetailPage({ params }: Props) {
                    participantId={typedParticipant.challenge_id + '_' + typedParticipant.user_id}
                    dayIndex={currentDay}
                    timezone={typedChallenge.timezone}
+                   isQuit={isQuit}
                  />
                ) : (
                  <div className="text-center py-12 text-muted-foreground">
@@ -162,27 +188,52 @@ export default async function ChallengeDetailPage({ params }: Props) {
 
   return (
     <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <Link 
-        href="/app/challenges"
-        className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors group"
-      >
-        <ChevronLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
-        Voltar para meus desafios
-      </Link>
+      <div className="flex items-center justify-between mb-6">
+        <Link 
+          href="/app/challenges"
+          className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors group"
+        >
+          <ChevronLeft className="w-4 h-4 mr-1 group-hover:-translate-x-1 transition-transform" />
+          Voltar para meus desafios
+        </Link>
+        <QuitChallengeButton 
+          challengeId={id} 
+          userId={user.id} 
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          status={(typedParticipant as any).status} 
+        />
+      </div>
+
+      {isQuit && (
+        <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+          <div>
+            <h3 className="text-sm font-medium text-yellow-900">Você desistiu deste desafio</h3>
+            <p className="text-sm text-yellow-700 mt-1">
+              Seus check-ins anteriores foram mantidos. Se desejar continuar, clique em &quot;Entrar novamente&quot; acima.
+            </p>
+          </div>
+        </div>
+      )}
 
       <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden mb-6">
         <div className="p-6 sm:p-8">
           <div className="flex items-center gap-2 mb-4">
-            <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium uppercase tracking-wide ${
-              typedChallenge.type === 'reading' ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300' :
-              typedChallenge.type === 'fasting' ? 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300' :
-              'bg-muted text-muted-foreground'
+            <span className={`px-3 py-1 rounded-full text-xs font-medium uppercase tracking-wide border shadow-sm bg-white ${
+              typedChallenge.type === 'reading' ? 'border-gray-200 text-blue-600' :
+              typedChallenge.type === 'fasting' ? 'border-gray-200 text-orange-600' :
+              'border-gray-200 text-gray-600'
             }`}>
               {translateType(typedChallenge.type)}
             </span>
             {typedParticipant.status === 'completed' && (
               <span className="bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 text-xs px-2.5 py-0.5 rounded-full font-medium">
                 Concluído
+              </span>
+            )}
+            {isQuit && (
+              <span className="bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 text-xs px-2.5 py-0.5 rounded-full font-medium">
+                Desistiu
               </span>
             )}
           </div>
@@ -219,8 +270,8 @@ export default async function ChallengeDetailPage({ params }: Props) {
       </div>
 
       {/* Check-in Action */}
-      {typedParticipant.status === 'active' && (
-        <div className="bg-card rounded-xl border border-border shadow-sm p-6 mb-6">
+      {(typedParticipant.status === 'active' || isQuit) && (
+        <div className={`bg-card rounded-xl border border-border shadow-sm p-6 mb-6 ${isQuit ? 'opacity-70 grayscale' : ''}`}>
           <div className="flex items-start gap-4 mb-6">
             <div className="p-3 bg-primary/10 text-primary rounded-lg">
               <BarChart className="w-6 h-6" />
@@ -239,6 +290,8 @@ export default async function ChallengeDetailPage({ params }: Props) {
             latestCheckinDate={latestCheckinDate}
             participantId={typedParticipant.challenge_id + '_' + typedParticipant.user_id} 
             timezone={typedChallenge.timezone}
+            disabled={isQuit}
+            disabledLabel="Você saiu deste desafio"
           />
         </div>
       )}

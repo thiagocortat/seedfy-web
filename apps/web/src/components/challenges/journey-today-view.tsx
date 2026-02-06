@@ -12,6 +12,7 @@ interface JourneyTodayViewProps {
   participantId: string;
   dayIndex: number;
   timezone?: string;
+  isQuit?: boolean;
 }
 
 export function JourneyTodayView({
@@ -21,7 +22,8 @@ export function JourneyTodayView({
   latestCheckinDate,
   participantId,
   dayIndex,
-  timezone
+  timezone,
+  isQuit
 }: JourneyTodayViewProps) {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -83,6 +85,8 @@ export function JourneyTodayView({
           participantId={participantId}
           dayIndex={dayIndex}
           timezone={timezone}
+          disabled={isQuit}
+          disabledLabel="Você saiu deste desafio"
         />
       </div>
     </div>
