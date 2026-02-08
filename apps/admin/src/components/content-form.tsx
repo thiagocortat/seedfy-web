@@ -2,6 +2,7 @@
 
 import { createContent, updateContent } from '@/actions/content';
 import { FileUpload } from '@/components/file-upload';
+import { TTSGenerator } from '@/components/tts-generator';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Loader2 } from 'lucide-react';
@@ -10,6 +11,8 @@ import { toast } from 'sonner';
 export function ContentForm({ initialData }: { initialData?: any }) {
   const [coverUrl, setCoverUrl] = useState(initialData?.cover_url || '');
   const [mediaUrl, setMediaUrl] = useState(initialData?.media_url || '');
+  const [type, setType] = useState(initialData?.type || 'podcast');
+  const [activeTab, setActiveTab] = useState<'upload' | 'tts'>('upload');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
 
@@ -66,7 +69,8 @@ export function ContentForm({ initialData }: { initialData?: any }) {
                 <label className="block text-sm font-medium text-gray-700">Tipo de Conteúdo</label>
                 <select
                 name="type"
-                defaultValue={initialData?.type || 'podcast'}
+                value={type}
+                onChange={(e) => setType(e.target.value)}
                 className="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2.5 border text-gray-900 bg-white"
                 >
                 <option value="podcast">Podcast (Áudio)</option>
@@ -123,18 +127,53 @@ export function ContentForm({ initialData }: { initialData?: any }) {
             </div>
 
             <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 space-y-4">
-                <FileUpload
-                    bucket="media"
-                    path="content"
-                    label="Arquivo de Mídia (Áudio/Vídeo)"
-                    accept="audio/*,video/*"
-                    maxSizeMB={100}
-                    onUploadComplete={(url) => setMediaUrl(url)}
-                />
+                <div className="flex items-center justify-between">
+                    <label className="block text-sm font-medium text-gray-700">Arquivo de Mídia (Áudio/Vídeo)</label>
+                    {['podcast', 'music'].includes(type) && (
+                        <div className="flex bg-white rounded-lg p-1 border border-gray-200">
+                            <button
+                                type="button"
+                                onClick={() => setActiveTab('upload')}
+                                className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${activeTab === 'upload' ? 'bg-gray-100 text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
+                            >
+                                Upload
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setActiveTab('tts')}
+                                className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${activeTab === 'tts' ? 'bg-indigo-50 text-indigo-700 shadow-sm' : 'text-gray-500 hover:text-gray-900'}`}
+                            >
+                                Gerar (TTS)
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {activeTab === 'upload' || !['podcast', 'music'].includes(type) ? (
+                    <FileUpload
+                        bucket="media"
+                        path="content"
+                        label=""
+                        accept="audio/*,video/*"
+                        maxSizeMB={100}
+                        onUploadComplete={(url) => setMediaUrl(url)}
+                    />
+                ) : (
+                    <TTSGenerator 
+                        onAccept={(url) => {
+                            console.log('TTS Accepted, setting mediaUrl:', url);
+                            setMediaUrl(url);
+                            toast.success('Áudio definido com sucesso!');
+                        }}
+                        type={type}
+                        contentId={initialData?.id}
+                    />
+                )}
+
                 <input type="hidden" name="media_url" value={mediaUrl} />
                 {mediaUrl && (
-                    <div className="mt-2">
-                        <label className="block text-xs font-medium text-gray-500 mb-1">Preview:</label>
+                    <div className="mt-2 p-2 border border-green-200 bg-green-50 rounded-lg">
+                        <label className="block text-xs font-bold text-green-700 mb-1">✓ Áudio Vinculado (Pronto para Salvar):</label>
                         {/* Simple detection based on extension or generic player */}
                         <video 
                             src={mediaUrl} 
@@ -143,6 +182,7 @@ export function ContentForm({ initialData }: { initialData?: any }) {
                         >
                             Seu navegador não suporta o elemento de vídeo.
                         </video>
+                        <div className="mt-1 text-xs text-gray-500 break-all">{mediaUrl}</div>
                     </div>
                 )}
             </div>

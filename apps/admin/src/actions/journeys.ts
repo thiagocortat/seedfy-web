@@ -4,6 +4,7 @@ import { createServiceClient } from '@seedfy/shared/server';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { JourneyTemplateSchema } from '@seedfy/shared';
+import { JourneyAIOutput } from '@/lib/ai-schemas';
 
 export async function createJourney(formData: FormData) {
   const durationsRaw = formData.get('durations_supported');
@@ -182,4 +183,53 @@ export async function toggleJourneyStatus(id: string, isActive: boolean) {
     }
     
     revalidatePath('/dashboard/journeys');
+}
+
+export async function saveAIJourney(data: JourneyAIOutput, isActive: boolean) {
+  const supabase = createServiceClient();
+  
+  // 1. Create Journey Template
+  const { data: journey, error: journeyError } = await supabase
+    .from('journey_templates')
+    .insert({
+      title: data.journey.title,
+      description_short: data.journey.description_short,
+      description_long: data.journey.description_long,
+      cover_image_url: data.journey.cover_image_url,
+      tags: data.journey.tags,
+      durations_supported: data.journey.durations_supported,
+      is_active: isActive,
+    })
+    .select()
+    .single();
+
+  if (journeyError || !journey) {
+    return { error: 'Failed to create journey: ' + journeyError?.message };
+  }
+
+  // 2. Create Chapters
+  const chaptersToInsert = data.chapters.map(c => ({
+    journey_id: journey.id,
+    day_index: c.day_index,
+    title: c.title,
+    focus: c.focus,
+    narrative: c.narrative,
+    practice: c.practice,
+    reflection_prompt: c.reflection_prompt,
+    prayer: c.prayer,
+    verse_reference: c.verse_reference,
+    verse_text: c.verse_text,
+    media_type: c.media_type,
+  }));
+
+  const { error: chaptersError } = await supabase
+    .from('journey_chapter_templates')
+    .insert(chaptersToInsert);
+
+  if (chaptersError) {
+    return { error: 'Journey created but chapters failed: ' + chaptersError.message };
+  }
+
+  revalidatePath('/dashboard/journeys');
+  return { success: true, id: journey.id };
 }

@@ -3,6 +3,8 @@ import { Plus, Search } from 'lucide-react';
 import Link from 'next/link';
 import JourneyList from '@/components/journey-list';
 
+import { AiTrigger } from './ai-trigger';
+
 export const dynamic = 'force-dynamic';
 
 export default async function JourneyListPage(props: {
@@ -35,13 +37,16 @@ export default async function JourneyListPage(props: {
             <h1 className="text-2xl font-bold text-gray-900">Jornadas</h1>
             <p className="text-gray-500 mt-1">Gerencie as jornadas e conteúdos diários.</p>
         </div>
-        <Link
-          href="/dashboard/journeys/new"
-          className="bg-blue-600 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm font-medium"
-        >
-          <Plus className="w-5 h-5" />
-          Nova Jornada
-        </Link>
+        <div className="flex gap-3">
+          <AiTrigger />
+          <Link
+            href="/dashboard/journeys/new"
+            className="bg-blue-600 text-white px-4 py-2.5 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm font-medium"
+          >
+            <Plus className="w-5 h-5" />
+            Nova Jornada
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}
